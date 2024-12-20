@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integração com Google Sheets</title>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Estilo para o iframe */
+        #planilhaIframe {
+            width: 100%;
+            height: 80vh; /* Altura responsiva */
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Planilhas</h1>
+        <div class="text-center mb-4">
+            <button class="btn btn-primary m-2" onclick="abrirPlanilha('1x5nWmomFrAamFy9sLZLnC-EEie3z0dV7')">Medicamentos</button>
+            <button class="btn btn-primary m-2" onclick="abrirPlanilha('1uVeXe-lkluCJZcWtm7SYwvwe0UsoAMBn')">Distúrbios de Potássio</button>
+            <button class="btn btn-primary m-2" onclick="abrirPlanilha('1GpBOoTQxO339kBkeN1l8wINnI9arm5Th')">Enteroparasitoses</button>
+            <button class="btn btn-primary m-2" onclick="abrirPlanilha('1RQ8zVUKSNRl2OG8Pel0wqWp_4vC4jopp')">Hidratação Venosa</button>
+        </div>
+        <div class="mt-4">
+            <iframe id="planilhaIframe" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        const CLIENT_ID = '375851982534-6ejdbt1r3qde0v4ohg2m9ggmf7af0a9e.apps.googleusercontent.com'; // Substitua pelo seu Client ID
+        const API_KEY = 'AIzaSyAzMTiVxlBJCxR1lZz9YEBSIeVVp5cKtR0'; // Substitua pela sua API Key
+
+        function abrirPlanilha(sheetId) {
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/edit?usp=sharing`;
+            document.getElementById('planilhaIframe').src = url;
+        }
+
+        function autenticar() {
+            gapi.load('client:auth2', () => {
+                gapi.auth2.init({ client_id: CLIENT_ID }).then(() => {
+                    gapi.auth2.getAuthInstance().signIn().then(() => {
+                        console.log("Usuário autenticado");
+                    });
+                });
+            });
+        }
+
+        function carregarDados(sheetId) {
+            gapi.client.init({ apiKey: API_KEY })
+                .then(() => {
+                    return gapi.client.sheets.spreadsheets.values.get({
+                        spreadsheetId: sheetId,
+                        range: 'Sheet1!A1:Z800', // Ajuste conforme necessário
+                    });
+                })
+                .then(response => {
+                    const data = response.result.values;
+                    console.log(data); // Exibir dados no console
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar dados:', error);
+                });
+        }
+
+        // Chame a função de autenticação ao carregar a página
+        window.onload = autenticar;
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
