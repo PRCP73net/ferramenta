@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<!-- saved from url=(0039)https://prcp73net.github.io/ferramenta/ -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="shortcut icon" type="imagex/png" href="https://prcp73net.github.io/ferramenta/images/foto.ico">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRCP 8.6 .net</title>
+    <link href="./PRCP 7.3 .net_files/bootstrap.min.css" rel="stylesheet">
+    <style>
+         .form-select {
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #ced4da !important;
+    }
+        body {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Painel do Usuário -->
+    <div id="userPanel" class="container">
+        <h2 class="text-center">Plantao-Rotina-CM-PEDI 8.6 by Martinellis .net, <span id="userNameDisplay"></span></h2>
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-info" onclick="mostrarInstrucoes(&#39;user&#39;)">CRÉDITOS</button>
+        </div>
+        <hr>
+        <div id="userOptions">
+            <h3>Opções de Usuário</h3>
+			<div class="d-grid gap-2">
+            <button class="btn btn-warning" onclick="abrirDigitador()">Digitador de Laboratório</button>
+            <button class="btn btn-warning" onclick="abrirTransformador()">Transformador de Texto</button>
+            <button class="btn btn-secondary" onclick="sugerirPrescricoes()">Sugestões de Prescrições</button>
+            <button class="btn btn-secondary" onclick="sugerirReposicoes()">Sugestões de Reposições</button>
+            <button class="btn btn-secondary" onclick="sugerirAntibioticos()">Sugestões de Antibioticos</button>
+            <button class="btn btn-secondary" onclick="sugerirDrippings()">Sugestões de Drippings</button>
+            <button class="btn btn-secondary" onclick="sugerirPreparos()">Sugestões de Preparos</button>
+            <button class="btn btn-secondary" onclick="sugerirAntibioticosc()">Sugestões de Antibióticos Correção</button>
+            <button class="btn btn-secondary" onclick="sugerirDosePedi()">Sugestões de Doses Pediátricas</button>
+            <button class="btn btn-warning" onclick="window.open(&#39;https://linkbio.co/6040513Mfcw57&#39;, &#39;_blank&#39;)">Link Ferramentas para CTI</button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Instruções -->
+    <div class="modal fade" id="instrucaoModal" tabindex="-1" aria-labelledby="instrucaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="instrucaoModalLabel">CRÉDITOS:</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="instrucaoTexto">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Digitador de Laboratório -->
+<div id="digitadorContainer" class="container d-none">
+ <h3>Digitador de Laboratório</h3>
+    <div class="position-relative">
+        <div class="position-absolute top-0 end-0 p-1 small-font" style="width: 200px; background: #f8f9fa; border: 1px solid #ced4da; border-radius: .25rem; box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075); font-size: 0.6rem;">
+  <h5>Referências</h5>
+            <p><strong>PCR:</strong> 0 a 1 MG/DL.</p>
+			<p><strong>URÉIA:</strong> 10 a 50 MG/DL.</p>
+			<p><strong>CREATININA:</strong> 0,5 a 1,5 MG/DL.</p>
+			<p><strong>SÓDIO:</strong> 135 a 148 MMOL/L.</p>
+			<p><strong>POTÁSSIO:</strong> 3,5 a 5,1 MMOL/L.</p>
+			<p><strong>HEMOGLOBINA:</strong> ≥ 7,0 G/DL.</p>
+			<p><strong>LEUCÓCITOS:</strong> ≤ 11000/MM3.</p>
+			<p><strong>BASTÕES:</strong> ≤ 5.</p>
+			<p><strong>CKMB:</strong> ≤ 25.</p>
+			<!-- Adicione mais referências se necessário -->
+        </div>
+    </div>
+    <textarea id="textoDigitador" class="form-control" rows="10" placeholder="Cole os dados do laboratório aqui..."></textarea>
+    <button class="btn btn-info mt-3" onclick="processarTexto()">Processar</button>
+    <button class="btn btn-secondary mt-3" onclick="limparTexto()">Limpar Texto</button>
+    <button class="btn btn-secondary mt-3" onclick="voltar()">Voltar</button>
+    <div id="resultadoDigitador" class="mt-3">Nenhum resultado encontrado.</div>
+</div>
+
+    <!-- Transformador de Texto -->
+    <div id="transformadorContainer" class="container d-none">
+        <h2>Transformador de Texto</h2>
+        <textarea id="textoTransformador" class="form-control" rows="10" placeholder="Cole o texto aqui..."></textarea>
+        <button class="btn btn-info mt-3" onclick="transformarTexto()">Transformar</button>
+		<button class="btn btn-secondary mt-3" onclick="limparTransformador()">Limpar Texto</button>
+        <button class="btn btn-secondary mt-3" onclick="voltarTransformador()">Voltar</button>
+        <div id="resultadoTransformador" class="mt-3"></div>
+    </div>
+	
+	<!-- Container de Prescrições -->
+	<div id="prescricoesContainer" class="container d-none">
+		<h2>Sugestões de Prescrições</h2>
+		<textarea id="textoPrescricoes" class="form-control" rows="10" readonly=""></textarea>
+		<button class="btn btn-secondary mt-3" onclick="voltarPrescricoes()">Voltar</button>
+	</div>
+
+	<!-- Container de Reposições -->
+	<div id="reposicoesContainer" class="container d-none">
+		<h2>Sugestões de Reposições</h2>
+		<textarea id="textoReposicoes" class="form-control" rows="10" readonly=""></textarea>
+		<button class="btn btn-secondary mt-3" onclick="voltarReposicoes()">Voltar</button>
+	</div>
+
+	<!-- Container de Preparos -->
+	<div id="preparosContainer" class="container d-none">
+		<h2>Sugestões de Preparos</h2>
+		<textarea id="textoPreparos" class="form-control" rows="10" readonly=""></textarea>
+		<button class="btn btn-secondary mt-3" onclick="voltarPreparos()">Voltar</button>
+	</div>
+
+	<!-- Container de Drippings -->
+	<div id="drippingsContainer" class="container d-none">
+		<h2>Sugestões de Drippings</h2>
+		<textarea id="textoDrippings" class="form-control" rows="10" readonly=""></textarea>
+		<button class="btn btn-secondary mt-3" onclick="voltarDrippings()">Voltar</button>
+	</div>
+
+	<!-- Container de Antibióticos -->
+	<div id="antibioticosContainer" class="container d-none">
+		<h2>Sugestões de Antibióticos</h2>
+		<textarea id="textoAntibioticos" class="form-control" rows="10" readonly=""></textarea>
+		<button class="btn btn-secondary mt-3" onclick="voltarAntibioticos()">Voltar</button>
+	</div>
+
+	<!-- Container de Antibióticos Correção -->
+	<div id="antibioticoscContainer" class="container d-none">
+		<h2>Sugestões Antibióticos Correção</h2>
+		<textarea id="textoAntibioticosc" class="form-control" rows="10" readonly=""></textarea>
+		<button class="btn btn-secondary mt-3" onclick="voltarAntibioticosc()">Voltar</button>
+	</div>
+
+	<!-- Container de Doses Pediátricas -->
+	<div id="dosepediContainer" class="container d-none">
+		<h2>Sugestões de Doses Pediátricas</h2>
+		<textarea id="textoDosePedi" class="form-control" rows="10" readonly=""></textarea>
+		<button class="btn btn-secondary mt-3" onclick="voltarDosePedi()">Voltar</button>
+	</div>
+
+    <script>
+		
+		// Chame esta função ao iniciar o script
+		// carregarUsuarios();
+
+        // Adicionando evento ao botão de login
+
+        // Função para mostrar créditos (agora no escopo global)
+        function mostrarInstrucoes(tipo) {
+            // Define o conteúdo do modal
+            const instrucoesUser = `
+                <p><strong>CRIADOR MASTER</strong> - DR. RUBENS MARTINELLI</p>
+                <p><strong>CRIADORA PLENO</strong> - DRA. MARSELLE MARTINELLI</p>
+                <p><strong>IDEALIZADOR</strong> - DR. PEDRO CABRAL</p>
+                <p><strong>PROGRAMADOR</strong> - THIAGO RIBEIRO</p>
+                <p><a href="https://instagram.com/comunicacreative/" target="_blank">@comunicacreative</a></p>
+            `;
+            
+            // Insere o conteúdo no modal
+            document.getElementById('instrucaoTexto').innerHTML = instrucoesUser;
+
+            // Inicializa e exibe o modal do Bootstrap
+            const modalElement = document.getElementById('instrucaoModal');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        }
+        // Função de Logoff
+       
+        function editarSenha() {
+            const username = document.getElementById('userNameDisplay').innerText; 
+            const user = usuarios.find(u => u.username === username);
+
+            if (user) {
+                const newPassword = prompt("Digite a nova senha:");
+                if (newPassword) {
+                    user.password = newPassword; // Atualizar a senha do usuário
+                    alert("Senha atualizada com sucesso!");
+                } else {
+                    alert("Senha não pode ser vazia.");
+                }
+            } else {
+                alert("Usuário não encontrado!");
+            }
+        }
+
+        // Funções de Administração
+        //função de listar usuários
+        
+        //função de adicionar usuário
+        
+        //função de editar o usuário
+        
+        //função remover usuário	
+       
+		// Funções de Navegação
+        function abrirDigitador() {
+            document.getElementById('userPanel').classList.add('d-none');
+            document.getElementById('digitadorContainer').classList.remove('d-none');
+        }
+
+        function abrirTransformador() {
+            document.getElementById('userPanel').classList.add('d-none');
+            document.getElementById('transformadorContainer').classList.remove('d-none');
+        }
+
+        function voltar() {
+            document.getElementById('digitadorContainer').classList.add('d-none');
+            document.getElementById('userPanel').classList.remove('d-none');
+        }
+
+        function voltarTransformador() {
+            document.getElementById('transformadorContainer').classList.add('d-none');
+            document.getElementById('userPanel').classList.remove('d-none');
+        }
+
+        // Funções de Extração
+        function processarTexto() {
+            const texto = document.getElementById('textoDigitador').value.trim();
+            const resultado = extrairResultados(texto);
+            document.getElementById('resultadoDigitador').innerText = resultado;
+        }
+
+        // Função para extrair resultados
+        function extrairResultados(texto) {
+            const resultados = {};
+            const regexes = {
+                'NOME': /Sr\. \(a\):\s*(.+?)\s*(?=Data Nasc\.|$)/mi,
+				'NOME': /Sr\. \(o\):\s*(.+?)\s*(?=Data Nasc\.|$)/mi,
+                'DATA DE NASCIMENTO': /Data Nasc\.:\s*(.+?)\s*$/mi,
+                'SEXO': /Sexo:\s*(.+?)\s*$/mi,
+                'LEITO': /Leito\/Enfer\.:?\s*([^\/]+)\s*\/.*$/mi, // Captura apenas antes da barra "/"
+                'GLIC': /GLICOSE\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'CR': /CREATININA\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'UR': /UREIA\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'UR': /UREIA - SORO\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'NA': /SODIO\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'NA': /SODIO - SORO\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+                'K': /POTASSIO\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'MG': /MAGNESIO\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'GGT': /GAMA GLUTAMIL TRANSFERASE \(GAMA - GT\)\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'GGT': /GAMAGLUTAMIL TRANSFERASE\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'HEM': /CONTAGEM DE HEMÁCIAS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'HB': /DOSAGEM DE HEMOGLOBINA\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+                'HB': /HEMOGLOBINA\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'HT': /AVALIAÇÃO DO HEMATÓCRITO\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+                'HT': /HEMATÓCRITO\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'LEUCO': /LEUCÓCITOS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'BASO': /BASÓFILOS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'EOS': /EOSINÓFILOS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'MIE': /MIELÓCITOS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'META': /METAMIELÓCITOS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'BAST': /BASTÕES HEMO\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'SEG': /SEGMENTADOS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'LINF': /LINFÓCITOS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'MONO': /MONÓCITOS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'PLAQ': /CONTAGEM DE PLAQUETAS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+                'PLAQ': /PLAQUETAS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'INR': /INR - PACIENTE\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'INR': /INR\s*(?:RESULTADO:)?\*(.+?)\s*$/mi,
+				'TAP - ATIVIDADE': /ATIVIDADE PROTROMBINA PACIENTE\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'TAP': /TEMPO DE PROTROMBINA ATIVADA\s*(?:RESULTADO:)?[\s\S]*(.+?)\s*$/mi,
+				'PTT': /PTT PACIENTE\/ CONTROLE\s*(?:RESULTADO:)?[\s\S]*(.+?)\s*$/mi,
+				'TGO': /TRANSAMINASE OXALACETICA \(TGO\)\s*(?:RESULTADO:)?[\s\S]*(.+?)\s*$/mi,
+				'TGO': /TRANSAMINASE GLUTAMICO-OXALACETICA\s*(?:RESULTADO:)?[\s\S]*(.+?)\s*$/mi,
+				'TGP': /TRANSAMINASE PIRUVICA \(TGP\)\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'TGP': /TRANSAMINASE GLUTAMICO PIRUVICA\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'FA': /FOSFATASE ALCALINA\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'BT': /BILIRRUBINA TOTAL\s*:?\s*(.+?)\s*$/mi,
+				'BD': /BILIRRUBINA DIRETA\s*:?\s*(.+?)\s*$/mi,
+				'BI': /BILIRRUBINA INDIRETA\s*:?\s*(.+?)\s*$/mi,
+				'PTN TOTAIS': /PROTEINAS TOTAIS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'ALBUMINA': /ALBUMINA\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'GLOBULINA': /GLOBULINAS\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'AMILASE': /AMILASE \(SORO\)\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'CK TOTAL': /CREATINA QUINASE - CK TOTAL\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'CKMB': /CREATINA QUINASE - CK MB\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'LDH': /DESIDROGENASE LACTICA TOTAL \(DHL\)\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'TROPONINA QUANTITATIVA': /TROPONINA QUANTITATIVA\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'CA': /CALCIO\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'P': /FOSFORO\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'PCR': /PROTEINA C REATIVA \(PCR\)\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'HEPATITE A': /HEPATITE A\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'HEPATITE B': /HEPATITE B\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi,
+				'HEPATITE C': /HEPATITE C\s*(?:RESULTADO:)?\s*(.+?)\s*$/mi
+            };
+
+			// Função auxiliar para formatar o resultado
+			function formatarResultado(resultado) {
+				let textoFormatado = '';
+				for (const [campo, valor] of Object.entries(resultado)) {
+					// Converte tanto o campo quanto o valor para maiúsculo
+					textoFormatado += `${campo.toUpperCase()}: ${valor.toUpperCase()}\n`;
+				}
+				return textoFormatado;
+			}
+
+			// Exemplo de uso:
+			/*
+			const texto = `seu texto aqui`;
+			const resultadoExtracao = extrairTexto(texto);
+			console.log(formatarResultado(resultadoExtracao));
+			*/
+            for (const [key, regex] of Object.entries(regexes)) {
+                const match = regex.exec(texto);
+                if (match) {
+                    resultados[key] = match[1].trim();
+                }
+            }
+
+            return Object.keys(resultados).length > 0 ? 
+                 Object.entries(resultados).map(([key, value]) => `${key.toUpperCase()}: ${value.toUpperCase()}`).join(' | ') : 
+                "Nenhum resultado encontrado.";
+        }
+
+        // Função para transformar texto em maiúsculas e substituir quebras de linha
+        function transformarTexto() {
+            const texto = document.getElementById('textoTransformador').value;
+            const textoTransformado = texto.toUpperCase().replace(/\n/g, ' ');
+            document.getElementById('resultadoTransformador').innerText = textoTransformado;
+        }
+
+        // Função para limpar texto no Digitador de Laboratório
+        function limparTexto() {
+            document.getElementById('textoDigitador').value = '';
+            document.getElementById('resultadoDigitador').innerText = '';
+        }
+		
+		//Função para limpar texto do Transformador
+		function limparTransformador() {
+			document.getElementById('textoTransformador').value = '';
+			document.getElementById('resultadoTransformador').innerText = '';
+		}
+
+     	// Funções para Sugestões de Prescrições
+		function sugerirPrescricoes() {
+		// Mostra o container de prescrições e oculta o painel do usuário
+			document.getElementById('prescricoesContainer').classList.remove('d-none'); 
+			document.getElementById('userPanel').classList.add('d-none'); 
+
+			const opcoes = [
+				"0. CLIQUE AQUI PARA ABRIR  ",
+				"1. ABUSO/EXPOSIÇÃO SEXUAL",
+				"2. ACIDENTE BIOLÓGICO",
+				"3. AFTAS",
+				"4. ALERGIAS",
+				"5. ALERGIA À DIPIRONA",
+				"6. ANEMIA",
+				"7. ARBOVIROSES SEM AGRAVO",
+				"8. ASMA USO CONTÍNUO",
+				"9. BENZETACIL",
+				"10. CANDIDÍASE",
+				"11. CERATOCONJUNTIVITE",
+				"12. CISTITE SIMPLES",
+				"13. CISTITE COM CÁLCULO E HBP",
+				"14. CISTITE DE REPETIÇÃO COMPLICADA",
+				"15. COLELITÍASE",
+				"16. CONSTIPAÇÃO",
+				"17. DIABETES INSULINO DEPENDENTE USO CONTÍNUO",
+				"18. DIABETES NÃO INSULINO DEPENDENTE USO CONTÍNUO",
+				"19. ENXAQUECA MIGRANEA",
+				"20. ESCABIOSE",
+				"21. ESPOROTRICOSE",
+				"22. GASTRITE",
+				"23. GASTROENTERITE",
+				"24. GESTANTE - PERMITIDOS",
+				"25. GOTA ATAQUE E MANUTENÇÃO",
+				"26. HEMATOMAS",
+				"27. HEMORRÓIDAS",
+				"28. HERPES",
+				"29. HIPERTENSÃO USO CONTÍNUO",
+				"30. HIV / AIDS - CONFORME CD4",
+				"31. HIV PEP - PÓS EXPOSIÇÃO",
+				"32. HIV PREP - PRÉ EXPOSIÇÃO",
+				"33. HORDÉOLO",
+				"34. IAM NA ALTA USO CONTÍNUO",
+				"35. INFLAMAÇÕES EM GERAL",
+				"36. LABIRINTITE",
+				"37. LUMBAGO",
+				"38. METRORRAGIA",
+				"39. OTITES",
+				"40. PARALISIA DE BELL",
+				"41. PELE SIMPLES",
+				"42. PELE COMPLICADA",
+				"43. PELE TÓPICOS",
+				"44. PERIODONTOSE",
+				"45. PNEUMONIA / SINUSITE / AMIGDALITE",
+				"46. QUEIMADURA",
+				"47. SUTURAS",
+				"48. TUBERCULOSE - 2 PRIMEIROS MESES",
+				"49. URETRITE / VAGINOSE / BALANITE",
+				"50. VARIZES",
+				"51. VERMINOSES",
+				"52. ATESTADO POR FORA",
+				"53. ATESTADO APTIDÃO / PISCINA",
+				"54. ADMISSIONAL - JALECO BRANCO",
+				"55. ENCAMINHAMENTO CF",
+				"56. DECLARAÇÃO DE COMPARECIMENTO",
+				"57. ENCAMINHAMENTO BAAR",
+				"58. ENCAMINHAMENTO ECOTT",
+				"59. ENCAMINHAMENTO FISIOTERAPIA",
+				"60. ENCAMINHAMENTO EDA",
+				"61. ENCAMINHAMENTO SUSPEITA DE GRAVIDEZ",
+				"62. ENCAMINHAMENTO RISCO CIRÚRGICO",
+				"63. ENCAMINHAMENTO ULTRASONOGRAFIAS",
+				"64. LABORATÓRIO PARA CLÍNICA DA FAMÍLIA",
+				"65. ALTA À REVELIA - RESPALDO",
+				"66. COMPLEMENTO PACIENTE CRÍTICO",
+				"67. EVOLUÇÃO UNIVERSAL - AMBOS OS SEXOS",
+				"68. ESCALA DE GLASGOW",
+			];
+
+				// Limpa o conteúdo anterior
+				const container = document.getElementById('prescricoesContainer');
+				container.innerHTML = '';
+
+				// Cria o select
+				const select = document.createElement('select');
+				select.id = 'dropdownPrescricoes';
+				select.className = 'form-select'; 
+				select.onchange = function() {
+					const selectedOption = this.value;
+					const textoPrescricao = obterTextoPrescricao(selectedOption);
+					document.getElementById('textoPrescricoes').value = textoPrescricao.toUpperCase();
+				};
+
+				// Adiciona as opções ao select
+				opcoes.forEach(opcao => {
+					const option = document.createElement('option');
+					option.value = opcao;
+					option.textContent = opcao;
+					select.appendChild(option);
+				});
+
+				// Adiciona o select ao container
+				container.appendChild(select); 
+
+				// Cria a área de texto
+				const textarea = document.createElement('textarea');
+				textarea.id = 'textoPrescricoes';
+				textarea.className = 'form-control mt-3'; 
+				textarea.rows = 10; 
+				container.appendChild(textarea); 
+
+				// Adiciona o botão "Voltar"
+				const voltarButton = document.createElement('button');
+				voltarButton.className = 'btn btn-secondary mt-3';
+				voltarButton.innerText = 'Voltar';
+				voltarButton.onclick = voltarPrescricoes; // Adiciona a função de voltar
+				container.appendChild(voltarButton); // Adiciona o botão ao container
+			}
+
+		function obterTextoPrescricao(opcao) {
+			const prescricoes = {
+			"1. ABUSO/EXPOSIÇÃO SEXUAL": `LEVONORGESTREL: 2 COMPRIMIDOS DE 0,75 MG VO EM DOSE ÚNICA, ATÉ 5 DIAS APÓS O ATO, SE NÃO SOUBER OU NÃO TIVER MÉTODO ANTICONCEPTIVO SEGURO.\nPENICILINA G BENZATINA: 2,4 MILHÕES DE UNIDADES IM, EM DOSE ÚNICA.\nMETRONIDAZOL: 500 MG, 4 COMPRIMIDOS VO, EM DOSE ÚNICA.\nCEFTRIAXONA: 500 MG IM, EM DOSE ÚNICA.\NAZITROMICINA: 500 MG, 2 COMPRIMIDOS VO, EM DOSE ÚNICA.\n\nNA CLÍNICA DA FAMÍLIA:\nTESTE RÁPIDO HIV E HEP B\nMOTIVO: EXPOSIÇÃO SEXUAL.\n\nCASO HIV NEGATIVO:\nTDF (TENOFOVIR) 300 MG VO 1X/DIA, POR 28 DIAS.\n3TC (LAMIVUDINA) 300 MG VO 1X/DIA, POR 28 DIAS.\nDOLUTEGRAVIR (DTG) 50 MG VO 1X/DIA, POR 28 DIAS.\n\nCASO HEP B NEGATIVA E SEM IMUNIZAÇÃO:\nVACINA ANTI-HEPATITE B ATÉ 14 DIAS APÓS A VIOLÊNCIA SEXUAL.\nNOTIFICAÇÃO COMPULSÓRIA VIA SINAN.`,
+			"2. ACIDENTE BIOLÓGICO": `USO INT:\n1-TENOFOVIR/LAMIVUDINA 300/300 MG (TDF/3TC): 1 CP AO DIA, POR 28 DIAS.\n2-DOLUTEGRAVIR 50 MG (DTG): 1 CP AO DIA, POR 28 DIAS.\nOBSERVAÇÕES: VERIFICAR SINAN PREENCHIDO E TOMAR APENAS SE FONTE DESCONHECIDA OU POSITIVA. INICIAR EM ATÉ 72H DO ACIDENTE.`,
+			"3. AFTAS": `USO INT:\n1- DIPIRONA 500MG 2CP 8H/8H NA DOR.\n\nUso Oral:\n11- ACETATO DE HIDROCORTISONA 5 MG + SULFATO DE NEOMICINA 5MG POMADA ORAL APLICAR 8/8H NO LOCAL AFETADO.\n`,
+			"4. ALERGIAS": `USO INT:\n1- PREDNISONA 20MG 1CP 1XDIA 5DIAS\n2- DEXCLORFENIRAMINA 2MG 1 CP 12/12H 5 DIAS\n`,
+			"5. ALERGIA À DIPIRONA": `USO INT:\n1- PARACETAMOL 500MG 1 CP DE 8/8H POR ATÉ 05 DIAS NA DOR OU FEBRE.\n`,
+			"6. ANEMIA": `USO INT:\n1- SULFATO FERROSO 40 MG 1 CP ANTES DO ALMOÇO E 1 CP ANTES DO JANTAR POR 30 DIAS.\n2- ÁCIDO FÓLICO 5MG 1CP 1X/DIA POR 30 DIAS.\n3- VITAMINA C 500MG COMPRIMIDO EFERVESCENTE 1 CP EFERVESCENTE EM 300ML DE ÁGUA E BEBER IMEDIATAMENTE APÓS TÉRMINO DA DISSOLUÇÃO POR 20 DIAS.\n`,
+			"7. ARBOVIROSES SEM AGRAVO": `USO INT:\n1- SRO SACHE 2 EM 2 LITROS EM 24H.\n2- DIPIRONA 500MG 2CP 6/6H NA DOR OU FEBRE.\n3- BROMOPRIDA 10MG 1CP 8/8H NO ENJOO.\n4- DEXCLORFERINAMINA 2MG 1CP 12/12H 3-5 DIAS NO CASO DE PRURIDO NO CORPO.\n* RETORNAR EM CASO DE SINAIS DE AGRAVO.`,
+			"8. ASMA USO CONTÍNUO": `USO INT:\n1- SALBUTAMOL AEROSOL 100MCG 2 PUFF 6/6H SOS NA CRISE.\n2- BECLOMETASONA AEROSOL 50MCG 1 PUFF 12/12H REGULAR.\n3- PREDNISONA 20MG 1CP 1X/DIA 5 DIAS PELA MANHÃ.`,
+			"9. BENZETACIL": `USO INT:\n1- BENZILPENICILINA BENZATINA 1.200.000 APLICAR EM DOSE ÚNICA - EM MÚSCULO PROFUNDO - REGIÃO EXTERNA DO GLÚTEO.`,
+			"10. CANDIDÍASE": `USO INT:\n1- FLUCONAZOL 150MG 1CP 1X/SEMANA POR 3 SEMANAS.\nUSO INT:\n1- NISTATINA POMADA APLICAR AO DEITAR 1X/DIA POR 5 DIAS.`,
+			"11. CERATOCONJUNTIVITE": `USO OFTÁLMICO:\n1- GENTAMICINA 5MG SOL OFT 2 GOTAS / OLHO 8/8H.\n2- DEXAMETASONA 1MG SOL OFT 2 GOTAS / OLHO 8/8H.\n3- DEXTRANO + HIPROMELOSE SOLUÇÃO OFTÁLMICA 2 GOTAS / OLHO 8/8H.\n* ORIENTO: APLICAR COMPRESSAS FRIAS DE SORO FISIOLÓGICO 0,9% NO LOCAL DE MAIOR INCÔMODO.`,
+			"12. CISTITE SIMPLES": `USO INT:\n1- NITROFURANTOINA 100MG 1CP 6/6H POR 7 DIAS.\n2- DIPIRONA 500MG 1CP ATÉ 6/6H NA DOR OU FEBRE.\n3- ESCOPOLAMINA 10MG 1CP 6/6H NA CÓLICA.\n* SE PERMANECER SINTOMAS, SOLICITAR UROCULTURA NA CLÍNICA DA FAMÍLIA.`,
+			"13. CISTITE COM CÁLCULO E HBP": `USO INT:\n1- CIPROFLOXACINO 500MG 1 CP 12/12H POR 7 DIAS.\n2- TANSULOSINA 0,4MG 1 CP 1X/DIA POR 30 DIAS OU ATÉ ELIMINAR CÁLCULOS.\n3- DIPIRONA 500MG 2 CP 6/6H NA DOR OU FEBRE.\n4- CETOPROFENO 100MG 1 CP 12/12H POR ATÉ 05 DIAS.`,
+			"14. CISTITE DE REPETIÇÃO COMPLICADA": `USO INT:\n1- FOSFOMICINA 3G 1 ENVELOPE EM 300ML DE ÁGUA DOSE ÚNICA.\n2- SULFAMETOXAZOL+TRIMETROPRIM 800/160MG 1CP 12/12H POR 3 DIAS.\n3- DIPIRONA 500MG 1CP ATÉ 6/6H NA DOR OU FEBRE.\n4- ESCOPOLAMINA 10MG 1CP 6/6H NA CÓLICA.\n* SE PERMANECER SINTOMAS, SOLICITAR UROCULTURA NA CLÍNICA DA FAMÍLIA.`,
+			"15. COLELITÍASE": `USO INT:\n1- DIPIRONA 500MG 1CP ATÉ 6/6 NA DOR OU FEBRE\n2- ESCOPOLAMINA 10MG 1CP 6/6H NA CÓLICA\nEVITAR: LEITE E DERIVADOS, BANANA, CHUCHU, FEIJÃO, CONSERVAS OU ENLATADOS, OVO, CARNE DE PORCO, CAMARÃO, OUTROS FRUTOS DO MAR, ALIMENTOS ULTRA PROCESSADOS (SALSICHA, LINGUIÇA, SALAME, MORTADELA, PRESUNTO, ETC...), CHOCOLATE, FRITURAS E GORDURAS, PIMENTAS E REFRIGERANTES.`,
+			"16. CONSTIPAÇÃO": `USO INT:\n1- DIPIRONA 500 MG 2 CP 8/8H NA DOR.\n2- BROMOPRIDA 10MG 1 CP DE 8/8H POR 5 DIAS.\n3- METAMUCIL 1 COLHER EM 250ML DE ÁGUA FILTRADA 12/12H. MEDIDA LAXATIVA\n4- LACTULONA XAROPE 667MG/ML 10ML 12/12H ATÉ EVACUAR SOS.`,
+			"17. DIABETES INSULINO DEPENDENTE USO CONTÍNUO": `USO INT (90 DIAS):\n1- INSULINA NPH 16UI PELA MANHÃ E 8UI À NOITE SC.\n2- INSULINA REGULAR SOS CONFORME ESQUEMA SC.\n181-220 4UI\n221-260 6UI\n261-300 8UI\n301-350 10UI\nA CIMA DE 351 12UI E PROCURAR EMERGÊNCIA.`,
+			"18. DIABETES NÃO INSULINO DEPENDENTE USO CONTÍNUO": `USO INT: (CONTÍNUO 90 DIAS)\n1- METFORMINA 850MG 1CP APÓS AS REFEIÇÕES 3X/DIA.\n2- GLICLAZIDA MR 30 1CP ANTES DAS GRANDES REFEIÇÕES 2X/DIA (TOMAR APENAS SE FOR COMER).\n* AVALIAR NA CLÍNICA DE FAMÍLIA INSULINIZAÇÃO.`,
+			"19. ENXAQUECA MIGRANEA": `USO INT:\n1- DIPIRONA MONOIDRATADA 350MG + MESILATO DE DI-HIDROERGOTAMINA 1MG + CAFEÍNA 100 MG 1CP ATÉ 8/8H NA ENXAQUECA.\n2- BROMOPRIDA 10MG 1CP 8/8H NO ENJOO.`,
+			"20. ESCABIOSE": `USO INT:\n1- IVERMECTINA 6 MG TOMAR 2 COMPRIMIDOS - DE UMA VEZ (DOSE ÚNICA).\n(35-50KG = 1+1/2 CP / 50-65KG = 2CP / 65-80KG = 2+1/2 CP).\n2- DEXCLORFENIRAMINA 2MG 1 CP 12/12H 5 DIAS.\nUSO TÓPICO:\n1- PERMETRINA 1% LOÇÃO PASSAR NO CORPO À NOITE - REALIZAR O PROCEDIMENTO POR 3 DIAS SEGUIDOS - REPETIR APÓS 7 DIAS.\n* NÃO REPETIR ROUPAS DE USO PESSOAL OU ROUPA DE CAMA E BANHO. LAVAR AS ROUPAS SEPARADAS E PASSAR COM FERRO QUENTE PELO PERÍODO DE 14 DIAS.\n* ACOMPANHAR EM CLÍNICA DE SAÚDE DA FAMÍLIA.`,
+			"21. ESPOROTRICOSE": `USO INT:\n1- ITRACONAZOL 100MG 1CP 12/12H POR 90 DIAS.\n2- CEFALEXINA 500MG 1 CP 6/6 HORAS POR 7 DIAS.\n3- DICLOFENACO K 50MG 1CP 12/12H POR 5 DIAS.`,
+			"22. GASTRITE": `USO INT:\n1- DIPIRONA 500MG 1CP ATÉ 6/6H NA DOR OU FEBRE.\n2- ESCOPOLAMINA 10MG 1CP 6/6H NA CÓLICA.\n3- OMEPRAZOL 20MG 1 CP 12/12H POR 21 DIAS (DOSE PLENA).\n4- BROMOPRIDA 10MG 1CP 8/8H NO ENJOO.\n5- SIMETICONA GOTAS 75MG/ML 40 GOTAS 8/8H NO GAZES.\n6- HIDRÓXIDO DE ALUMÍNIO 6% 15ML ATÉ 4/4H ATÉ ALÍVIO.\n* EVITAR JEJUM PROLONGADO.\n* EVITE LÍQUIDOS JUNTO COM AS REFEIÇÕES.\n* EVITAR ÁLCOOL, REFRIGERANTES, CIGARROS, CHOCOLATE, FRITURAS E PIMENTAS.\n* ELEVE A CABEÇEIRA PARA DORMIR E NÃO DEITE ATÉ 2H APÓS REFEIÇÕES.`,
+			"23. GASTROENTERITE": `USO INT:\n1- SRO SACHE 2 EM 2 LITROS EM 24H.\n2- CIPROFLOXACINO 500MG 1CP 12/12H POR 7 DIAS.\n3- DIPIRONA 500MG 1CP ATÉ 6/6H NA DOR OU FEBRE.\n4- ESCOPOLAMINA 10MG 1CP 6/6H NA CÓLICA.\n5- OMEPRAZOL 20MG 1 CP 12/12H POR 21 DIAS (DOSE PLENA).\n6- ONDANSERTRONA 8MG 1CP 8/8H NO ENJOO SL.\n7- SACCHAROMYCES BOULARDII 200MG 1CP 8/8H POR 5 DIAS.\n8- TIORFAN 100MG (NA FALTA DO ANTERIOR) 1CP 8/8H POR 5 DIAS.`,
+			"24. GESTANTE - PERMITIDOS": `USO INT:\n1- METILDOPA 250MG 1CP 8/8H SE PA >160X100\n2- DIPIRONA 500MG 1CP ATÉ 6/6 NA DOR OU FEBRE\n3- ESCOPOLAMINA 10MG 1CP 6/6H NA CÓLICA\n4- ONDANSETRONA 4MG 1CP 8/8H NO ENJOO\n5- HIDRÓXIDO DE ALUMÍNIO SOL 10ML 6/6H NA AZIA\n4- SACCHAROMYCES BOULARDII 200MG 1CP 8/8H 5 DIAS.`,
+			"25. GOTA ATAQUE E MANUTENÇÃO": `USO INT:\n1- COLCHICINA 0,5MG 1CP 8/8H POR 7 DIAS OU ATÉ MELHORA NA CRISE.\n2- ALOPURINOL 100MG 1CP 1X/DIA POR 30 DIAS USO CONTÍNUO.\nEVITAR CERVEJA, CARNE VERMELHA E FRUTOS DO MAR (PURINAS).`,
+			"26. HEMATOMAS": `USO TÓPICO:\n1- POLISSULFATO DE MUCOPOLISSACARÍDEO 5MG POMADA APLICAR 4X/DIA NOS HEMATOMAS.`,
+			"27. HEMORRÓIDAS": `USO TÓPICO:\n1- PROCTYL POMADA RETAL APLICAR APROXIMADAMENTE 2CM DE POMADA NA ÁREA AFETADA DUAS A TRÊS VEZES AO DIA POR 15 DIAS.\nUSO INT:\n2- DIPIRONA 500 MG 2 CP 8/8H NA DOR.\n3- DICLOFENACO POTÁSSICO 50MG 1CP 12/12H POR 5 DIAS.`,
+			"28. HERPES": `USO INT:\n1- ACICLOVIR 400MG 2 CPS DE 4/4H (5 VEZES AO DIA) OMITINDO-SE A DOSE NOTURNA POR 7 DIAS.\n2- DIPIRONA 500MG 1CP 6/6H NA DOR OU FEBRE.\n3- DEXCLORFENIRAMINA 2MG 1 CP 12/12H POR 5 DIAS.\nUSO TÓPICO:\n1- ACICLOVIR POMADA DE USO TÓPICO 50MG/G APLICAR NAS LESÕES DE 4/4H POR 7 DIAS.\n* ACOMPANHAMENTO PELA CLÍNICA DA FAMÍLIA.`,
+			"29. HIPERTENSÃO USO CONTÍNUO": `USO INT: (CONTÍNUO 90 DIAS)\n1- LOSARTANA K 50MG 1CP 12/12H.\n2- ANLODIPINO 5MG 1CP 12/12H.\n3- HIDROCLOROTIAZIDA 25MG 1CP 1X/DIA MANHÃ.`,
+			"30. HIV / AIDS - CONFORME CD4": `USO INT:\n1- SULFAMETOXAZOL+TRIMETROPRIM 800/160MG (<200/100) 1CP 6/6H POR 21 DIAS (TRATAMENTO PNEUMONIA/TOXO).\n1CP SEG/QUA/SEX (PROFILAXIA PNEUMONIA/TOXO).\n2- AZITROMICINA 500MG (<50) 1CP SEG/QUA/SEX (PROFILAXIA MYCOBACTERIUM).\n3- FLUCONAZOL 200MG 1CP 1X/DIA (TRATAMENTO CRIPTOCOCOSE) (<200).\n4- SULFADIAZINA 1G 6/6H + PIRIMETAMINA 50MG 1X/DIA + ÁCIDO FOLÍNICO 10MG 1X/DIA (PROFILAXIA TOXOPLASMOSE).`,
+			"31. HIV PEP - PÓS EXPOSIÇÃO": `USO INT:\n1- TENOFOVIR / LAMIVUDINA 300/300MG (TDF/3TC) TOMAR 1 CP AO DIA, POR 28 DIAS.\n2- DOLUTEGRAVIR 50MG (DTG) TOMAR 1 CP AO DIA, POR 28 DIAS.\nOBS: INICIAR EM ATÉ 72H DO CONTATO.`,
+            "32. HIV PREP - PRÉ EXPOSIÇÃO": `USO INTERNO (30 DIAS):\n1- ENTRICITABINA 200MG + FUMARATO DE TENOFOVIR DESOPROXILA 300MG.`,
+			"33. HORDÉOLO": `USO INT:\n1- CEFALEXINA 500MG 1 CP 6/6 HORAS POR 7 DIAS.\n\nUSO OFTÁLMICO:\n1- GENTAMICINA 5MG SOL OFT 2 GOTAS / OLHO 8/8H.\n2- DEXAMETASONA 1MG SOL OFT 2 GOTAS / OLHO 8/8H.\n* ORIENTO: APLICAR COMPRESSAS FRIAS DE SORO FISIOLÓGICO 0,9% NO LOCAL DE MAIOR INCÔMODO.`,
+			"34. IAM NA ALTA USO CONTÍNUO": `USO INT: (CONTÍNUO 90 DIAS)\n1- LOSARTANA POTÁSSICA 50MG 1 COMPRIMIDO ORAL 12/12H.\n2- HCTZ 25MG 1 COMPRIMIDO 24/24H MANHÃ.\n3- CLOPIDOGREL 75MG (COMP) 1 COMPRIMIDO ORAL 24/24H.\n4- SINVASTATINA 20MG 2 COMPRIMIDOS ORAL 24/24H ÀS 21 HORAS.\n5- ÁCIDO ACETILSALICÍLICO 100MG 1 COMPRIMIDO ORAL NO ALMOÇO.`,
+			"35. INFLAMAÇÕES EM GERAL": `USO INT:\n1- DIPIRONA 500 MG 2 CP 8/8H NA DOR.\n2- DICLOFENACO POTÁSSICO 50MG 1 CP 12/12H POR 5 DIAS.\n* ORIENTO: APLICAR COMPRESSA MORNA NA REGIÃO.`,
+			"36. LABIRINTITE": `USO INT:\n1- DICLORIDRATO FLUNARIZINA 3MG + MESILLATO DE DIIDROERGOCRISTINA 10 MG 1 CP 1X/DIA POR 20 DIAS OU ATÉ MELHORA DO QUADRO.`,
+			"37. LUMBAGO": `USO INT:\n1- DIPIRONA 500 MG 2 CP 8/8H NA DOR.\n2- DICLOFENACO POTÁSSICO 50MG 1 CP 12/12H POR 5 DIAS.\n3- CICLOBENZAPRINA 10MG 1 CP 1X/DIA À NOITE ATÉ 05 DIAS.\n* ORIENTO: APLICAR COMPRESSAS DE ÁGUA MORNA NO LOCAL MAIOR INCÔMODO.\n* CORREÇÃO POSTURAL.`,
+			"38. METRORRAGIA": `USO INT:\n1- ÁCIDO TRANEXÂMICO 250MG 1 CP 1X/DIA POR 12 DIAS OU ATÉ PARAR O SANGRAMENTO.\n2- DIPIRONA 500MG 1 CP ATÉ 6/6H NA DOR OU FEBRE.\n3- ESCOPOLAMINA 10MG 1 CP 6/6H NA CÓLICA.\n4- DICLOFENACO POTÁSSICO 50MG 1 CP 12/12H POR 5 DIAS.`,
+			"39. OTITES": `USO OTOLÓGICO:\n1- FLUOCINOLONA ACETONIDA 0,250MG + SULFATO DE POLIMIXINA B 10.000UI + SULFATO DE NEOMICINA 3,50MG + CLORIDRATO DE LIDOCAÍNA 20MG PINGAR 4 GOTAS 6/6H NO OUVIDO AFETADO.\n\nUSO INT:\n1- DIPIRONA 500 MG 2 CP 8/8H NA DOR.\n2- DICLOFENACO K 50MG 1 CP 12/12H POR 5 DIAS.`,
+			"40. PARALISIA DE BELL": `USO INT:\n1- PREDNISONA 20MG 2 CPS 1X/DIA MANHÃ POR 5 DIAS E DEPOIS 1 CP 1X/DIA POR MAIS 5 DIAS.\nUSO OFTALMOLÓGICO:\n1- CARMELOSE SÓDICA 0,5% APLICAR NO OLHO AFETADO 1-2 GOTAS A CADA 2-4H SE NECESSÁRIO.`,
+			"41. PELE SIMPLES": `USO INT:\n1- CEFALEXINA 500MG 1 CP 6/6 HORAS POR 7 DIAS.\n2- DICLOFENACO K 50MG 1 CP 12/12H POR 5 DIAS.`,
+			"42. PELE COMPLICADA": `USO INT:\n1- DOXICICLINA 100MG 1 CP 12/12H POR 7 DIAS.\n2- CLINDAMICINA 300MG 1 CP 6/6H POR 7 DIAS.\n3- DICLOFENACO K 50MG 1 CP 12/12H POR 5 DIAS.`,
+			"43. PELE TÓPICOS": `USO TÓPICO:\n1- DEXAMETASONA POMADA APLICAR 3X/DIA NA REGIÃO POR 5 DIAS.\n2- NEOMICINA / BACTRICINA POMADA APLICAR 3X/DIA NA REGIÃO POR 5 DIAS.`,
+			"44. PERIODONTOSE": `USO INT:\n1- DIPIRONA 500 MG 2 CP 8/8H NA DOR.\n2- DICLOFENACO POTÁSSICO 50MG 1 CP 12/12H POR 5 DIAS.\n3- AMOXICILINA + CLAVULANATO K 500+125 1 CP 8/8H POR 7 DIAS.\nCOMPRESSA MORNA NA REGIÃO.`,
+			"45. PNEUMONIA / SINUSITE / AMIGDALITE": `USO INT:\n1- AMOXICILINA + CLAVULANATO K 500+125 1 CP 8/8H POR 7 DIAS.\n* OU AMOXICILINA 500MG 1 CP 8/8H POR 7 DIAS (NA FALTA DO ANTERIOR).\n* OU AZITROMICINA 500MG 1 CP 1X/DIA POR 5 DIAS (NA FALTA DO ANTERIOR).\n2- PREDNISONA 20MG 1 CP 1X/DIA POR 5 DIAS.\n3- DIPIRONA 500MG 1 CP 6/6H NA DOR OU FEBRE.\n4- AMBROXOL XAROPE 5ML 8/8H POR 5 DIAS NA TOSSE.`,
+			"46. QUEIMADURA": `USO INT:\n1- DIPIRONA 500 MG 2 CP 8/8H NA DOR.\n2- CETOPROFENO 100MG 1 CP 12/12H POR 5 DIAS.\n* OU DICLOFENACO K 50MG 1 CP 12/12H POR 5 DIAS (EM CASO DE FALTA).\nUSO TÓPICO:\n1- SULFADIAZINA DE PRATA CREME APLICAR FINA CAMADA NA REGIÃO 2 VEZES AO DIA POR 4 DIAS.`,
+			"47. SUTURAS": `USO INT:\n1- CEFALEXINA 500MG 1 CP 6/6H POR 7 DIAS.\n2- DICLOFENACO K 50MG 1 CP 12/12H POR 7 DIAS.\n3- DIPIRONA 500MG 1 CP 6/6H NA DOR.\n* RETIRAR PONTOS APÓS 10 DIAS.\n* REVER VACINAÇÃO DIFTERIA E TÉTANO.`,
+			"48. TUBERCULOSE - 2 PRIMEIROS MESES": `USO INT:\n1- RIFAMPICINA + ISONIAZIDA + PIRAZINAMIDA + ETAMBUTOL 150+75+400+275 MG 4 CP 1X/DIA PELA MANHÃ DURANTE 60 DIAS !!!`,
+			"49. URETRITE / VAGINOSE / BALANITE": `USO INT:\n1- DIPIRONA 500MG 1 CP 6/6H NA DOR.\n2- ESCOPOLAMINA 10MG 1 CP 6/6H NA CÓLICA.\n3- AZITROMICINA 500MG 2 CPS DOSE ÚNICA.\n4- METRONIDAZOL 250MG 8 CPS DOSE ÚNICA.\n* PROCURAR CLÍNICA DA FAMÍLIA PARA TESTAR SOROLOGIAS E ACOMPANHAR SE NÃO HOUVER MELHORA.`,
+			"50. VARIZES": `USO INT:\n1- DIOSMINA + HESPERIDINA 450+50MG 2 CP 1X/DIA (30 DIAS).\n2- DICLOFENACO K 50MG 1 CP 12/12H POR 5 DIAS.\n3- DIPIRONA 500MG 1 CP 6/6H NA DOR.`,
+			"51. VERMINOSES": `USO INT:\n1- SRO SACHE 2 EM 2 LITROS EM 24H.\n2- NITAZOXANIDA 500MG 1 CP 12/12H POR 3 DIAS.\n3- DIPIRONA 500MG 1 CP ATÉ 6/6H NA DOR OU FEBRE.\n4- ESCOPOLAMINA 10MG 1 CP 6/6H NA CÓLICA.\n5- SIMETICONA 40MG 1 CP DE 8/8H POR ATÉ 5 DIAS.\n6- SACCHAROMYCES BOULARDII 200MG 1 CP 8/8H POR 5 DIAS.`,
+			"52. ATESTADO POR FORA": `ATESTO PARA FINS LABORAIS QUE A PACIENTE SUPRACITADO(A) NECESSITA DE _ DIA(S) DE REPOUSO POR MOTIVO DE DOENÇA A PARTIR DO DIA ___`,
+			"53. ATESTADO APTIDÃO / PISCINA": `ATESTO PARA OS DEVIDOS FINS QUE O PACIENTE SUPRACITADO ENCONTRA-SE APTO A PRÁTICA ESPORTIVA E FREQUENTAR PISCINA, NÃO SENDO PORTADOR DE DOENÇA INFECTO CONTAGIOSA OU CRÔNICA ATÉ A PRESENTE DATA.`,
+			"54. ADMISSIONAL - JALECO BRANCO": `DECLARO PARA FINS LABORAIS QUE O PACIENTE SUPRACITADO É PORTADOR DE SÍND. DO JALECO BRANCO R03.0 - VALOR ELEVADO DA PRESSÃO ARTERIAL SEM O DIAGNÓSTICO DE HIPERTENSÃO E ENCONTRA-SE COM A PRESSÃO CONTROLADA APÓS CONSULTA MÉDICA.`,
+			"55. ENCAMINHAMENTO CF": `SOLICITO: AVALIAÇÃO E ENCAMINHAMENTO VIA CLÍNICA DA FAMÍLIA\nMOTIVO:`,
+			"56. DECLARAÇÃO DE COMPARECIMENTO": `DECLARO PARA OS DEVIDOS FINS QUE O PACIENTE SUPRACITADO COMPARECEU EM NOSSO NOSOCÔMIO NA DATA DE HOJE POR MOTIVO DE SAÚDE.`,
+			"57. ENCAMINHAMENTO BAAR": `SOLICITO: EXAME DE BAAR\nMOTIVO: RSX DE TÓRAX SUGESTIVO DE CAVITAÇÃO.`,
+			"58. ENCAMINHAMENTO ECOTT": `SOLICITO: ECOTT\nMOTIVO: SUSP. DE ICC ?`,
+			"59. ENCAMINHAMENTO FISIOTERAPIA": `SOLICITO: FISIOTERAPIA 10 SESSÕES\nMOTIVO:`,
+			"60. ENCAMINHAMENTO EDA": `SOLICITO: ENDOSCOPIA DIGESTIVA ALTA (EDA)\nMOTIVO: INVESTIGAÇÃO PARA H. PYLORI.`,
+			"61. ENCAMINHAMENTO SUSPEITA DE GRAVIDEZ": `SOLICITO: TIG\nINDICAÇÃO: SUSPEITA DE GRAVIDEZ.`,
+			"62. ENCAMINHAMENTO RISCO CIRÚRGICO": `SOLICITO: ECG + HEMOGRAMA COMPLETO + RSX DE TÓRAX\nMOTIVO: RISCO CIRÚRGICO.`,
+			"63. ENCAMINHAMENTO ULTRASONOGRAFIAS": `SOLICITO:\n- USG DE ABDOME TOTAL\n- USG DE VIAS URINÁRIAS\n- USG TRANSVAGINAL\n- USG OMBRO À _\nINDICAÇÃO:\n- COLELITÍASE ?\n- CALCULOSE RENAL ?\n- DIP ?\n- LESÃO MANGUITO ROTADOR ?`,
+			"64. LABORATÓRIO PARA CLÍNICA DA FAMÍLIA": `SOLICITO:\nHEMOGRAMA\nCOL. TOTAL E FRAÇÕES\nTRIGLICERÍDEOS\nÁC. ÚRICO\nCREATININA\nURÉIA\nSÓDIO\nPOTÁSSIO\nGLICOSE EM JEJUM.`,
+			"65. ALTA À REVELIA - RESPALDO": `EM TEMPO: PACIENTE CHAMADO POR DIVERSAS VEZES PORÉM NÃO COMPARECEU NO CONSULTÓRIO. FAÇO BUSCA ATIVA E O MESMO NÃO SE ENCONTRA NA UNIDADE E NÃO FOI REAVALIADO POR MIM. DOU ALTA À REVELIA.`,
+			"66. COMPLEMENTO PACIENTE CRÍTICO": `* ORIENTO EM CASO DE SINAIS DE ALARME PROCURAR ATENDIMENTO MÉDICO IMEDIATO.\n* ORIENTO ACOMPANHAR EM CLÍNICA DA FAMÍLIA.\n* PACIENTE ENTENDE ORIENTAÇÕES.`,
+			"67. EVOLUÇÃO UNIVERSAL - AMBOS OS SEXOS": `PACIENTE EM BEG, LOTE, MUCOSA CORADA, PELE HIDRATADA, SEM ICTERÍCIA, SEM CIANOSE, SEM DISPNÉIA E HEMODINAMICAMENTE ESTÁVEL.\nORO: SEM ALTERAÇÕES.\nOTO: LIMPA, MT TRANSLÚCIDA.\nACV: RCR, 2T BNF SEM SOPRO.\nAR: MVUA, SEM RA.\nABD: ATÍPICO, PERISTÁLTICO, TIMPANICO, INDOLOR, RH+, BLUMBERG NEGATIVO E ROVSING NEGATIVO.\nSNC: PUPILAS ISOCÓRICAS E FOTORREAGENTES, KERNIG E BRUDZINSKY NEGATIVOS, GLASGOW 15, NUCA LIVRE.\nMMII: SEM EDEMAS E HOMANS NEGATIVO BILATERALMENTE.`,
+			"68. ESCALA DE GLASGOW": `ABERTURA OCULAR\n(ESPONTÂNEA=4 ; A VOZ=3 ; A DOR=2 ; NENHUMA=0)\n\nRESPOSTA VERBAL\n(ORIENTADO=5 ; CONFUSA=4 ; PALAVRAS=3 ; SONS=2 ; NADA=1)\n\nRESPOSTA MOTORA\n(COMANDO=6 ; LOCALIZA DOR=5 ; RETIRADA=4 ; FLEXÃO=3 ; EXTENSÃO=2 ; NENHUMA=0)`
+				
+				// Adicione os textos das outras opções aqui...
+			};
+
+			return prescricoes[opcao] || "Texto não disponível.";
+		}
+
+				function voltarPrescricoes() {
+                    const container = document.getElementById('prescricoesContainer');
+                    container.classList.add('d-none');
+                    container.innerHTML = ''; // ✅ LIMPA TODO O CONTEÚDO
+                    document.getElementById('userPanel').classList.remove('d-none');
+                }
+		// Funções para Sugestões de Reposições
+		function sugerirReposicoes() {
+		// Mostra o container de reposições e oculta o painel do usuário
+			document.getElementById('reposicoesContainer').classList.remove('d-none'); 
+			document.getElementById('userPanel').classList.add('d-none'); 
+
+			const opcoes = [
+				"0. CLIQUE AQUI PARA ABRIR  ",
+				"1. SÓDIO - Na",
+				"2. MAGNÉSIO - Mg",
+				"3. CÁLCIO - Ca",
+				"4. BICARBONATO - HCO3 Baixo",
+				"5. POTÁSSIO - K",
+			];
+
+			// Limpa o conteúdo anterior
+				const container = document.getElementById('reposicoesContainer');
+				container.innerHTML = '';
+
+			// Cria o select
+				const select = document.createElement('select');
+				select.id = 'dropdownReposicoes';
+				select.className = 'form-select'; 
+				select.onchange = function() {
+					const selectedOption = this.value;
+					const textoReposicao = obterTextoReposicao(selectedOption);
+					document.getElementById('textoReposicoes').value = textoReposicao.toUpperCase();
+				};
+
+				// Adiciona as opções ao select
+				opcoes.forEach(opcao => {
+					const option = document.createElement('option');
+					option.value = opcao;
+					option.textContent = opcao;
+					select.appendChild(option);
+				});
+
+				// Adiciona o select ao container
+				container.appendChild(select); 
+
+				// Cria a área de texto
+				const textarea = document.createElement('textarea');
+				textarea.id = 'textoReposicoes';
+				textarea.className = 'form-control mt-3'; 
+				textarea.rows = 10; 
+				container.appendChild(textarea); 
+
+				// Adiciona o botão "Voltar"
+				const voltarButton = document.createElement('button');
+				voltarButton.className = 'btn btn-secondary mt-3';
+				voltarButton.innerText = 'Voltar';
+				voltarButton.onclick = voltarReposicoes; // Adiciona a função de voltar
+				container.appendChild(voltarButton); // Adiciona o botão ao container
+			}
+
+		function obterTextoReposicao(opcao) {
+			const reposicoes = {
+			"1. SÓDIO - Na": `\n1- HIPONATREMIA: 220ML DE NACL 0,9% + 3 AMP NACL 20% 12/12H À 41ML/h.\n2 - HIPERNATREMIA: 250ML DE NACL 0,9% + 250ML DE AD OU OFERTAR ÁGUA FILTRADA`,
+			"2. MAGNÉSIO - Mg": `\n1 - HIPOMAGNESEMIA: 210ML DE NACL 0,9% + 4 AMP SULFATO DE MG 10% 12/12H A 125ML/H.\n2 - HIPERMAGNESEMIA: 10 ML DE GLUCONATO DE CA A 10% EM 10 MINUTOS E SUSPENDER REPOSIÇÃO.`,
+			"3. CÁLCIO - Ca": `\n1 - HIPOCALCEMIA: 190ML DE NACL 0,9% + 6 AMP GLUCONATO DE CA 10% 12/12H A 41ML/H.\n2 - HIPERCALCEMIA: SUSPENDER REPOSIÇÃO.\n`,
+			"4. BICARBONATO - HCO3 Baixo": `\n 150ML DE HCO3 + 850ML DE GLICOSE 5% OU SF0,45% (SE DIABÉTICO) EM 24H.\n\n PARA DIABÉTICOS: 150ML DE HCO3 + 850ML DE NACL 0,45% EM 24H.\n\n PARA ANÚRICOS: 100ML DE HCO3 + 100ML DE GLICOSE 5% EM 24H. \n\n > NOTA: PARA 12H, DIVIDIR O VOLUME PELA METADE ! \n`,
+			"5. POTÁSSIO - K": `\n HIPOCALEMIA (3 ATÉ 3,5):\n\n KCL 6% XAROPE 20ML 8/8H 4-8 DIAS VO.\n OU KCL 600MG 2CP 8/8H 4-8 DIAS VO. \n OFERTAR POTÁSSIO NA DIETA. \n\n HIPOCALEMIA (<3 E/OU ECG ALTERADO EM <3,5): \n\n 2 AMP KCL 19,1% EM 230ML DE NACL 0,9% EM 4H EM ACESSO PERIFÉRICO OU \n 4 AMP KCL 19,1% EM 210ML DE NACL 0,9% EM 4H EM ACESSO PROFUNDO\n MONITORAR E OFERTAR POTÁSSIO NA DIETA \n\n HIPERCALEMIA LEVE (5,5 ATÉ 5,9) OU MÉDIA (6,0 ATÉ 6,9): \n\n 1 AMP DE GLUCONATO DE CA 10% EM 90ML DE SG 5% EM 5 MINUTOS \n MONITORAR E SUSPENDER POTÁSSIO NA DIETA \n HIPERCALEMIA GRAVE (>6,9 OU ECG ALTERADO EM >5,5): \n MONITORAR E SUSPENDER POTÁSSIO NA DIETA \n\n *SE CONSTIPADO COM DIURESE PRESENTE: 2 AMP DE FUROSEMIDA EV OU \n *SE NÃO CONSTIPADO E ANÚRICO: 1 ENV. DE POLIESTIRENOSSULFONATO DE CA + 100ML DE MANITOL VO OU \n *SE NÃO ELIMINAR, GLICOINSULINA: 100ML DE SG 50% + 10 UI DE INSULINA REGULAR EV OU \n *SE AINDA NÃO ELIMINAR: HEMODIÁLISE DE URGÊNCIA \n **SE ESTIVER COM ACIDOSE: 100ML DE HCO3 EV IMEDIATO SEGUIDO DE 150ML DE HCO3 + 850ML DE SG5% OU SF0,45% (SE DIABÉTICO) EM 24H \n `,
+	
+				// Adicione os textos das outras opções aqui...
+			};
+
+			return reposicoes[opcao] || "Texto não disponível.";
+		}
+
+				function voltarReposicoes() {
+                    const container = document.getElementById('reposicoesContainer');
+                    container.classList.add('d-none');
+                    container.innerHTML = '';
+                    document.getElementById('userPanel').classList.remove('d-none');
+                }
+
+		
+               
+		// Funções para Sugestões de Antibióticos
+        function sugerirAntibioticos() {
+        // Oculta o painel do usuário
+        document.getElementById('userPanel').classList.add('d-none');
+
+        // Mostra o container de antibióticos
+        const container = document.getElementById('antibioticosContainer');
+        container.classList.remove('d-none');
+
+        // ✅ LIMPA TODO O CONTEÚDO ANTERIOR DO CONTAINER
+        container.innerHTML = '';
+
+        const opcoes = [
+            "0. CLIQUE AQUI PARA ABRIR  ",
+            "1. INFECÇÃO PULMONAR COMUNITÁRIA",
+            "2. INFECÇÃO PULMONAR HOSPITALAR",
+            "3. INFECÇÃO URINÁRIA COMUNITÁRIA",
+            "4. INFECÇÃO URINÁRIA HOSPITALAR",
+            "5. INFECÇÃO ABDOMINAL COMUNITÁRIA",
+            "6. INFECÇÃO ABDOMINAL HOSPITALAR",
+            "7. INFECÇÃO DE PELE COMUNITÁRIA",
+            "8. INFECÇÃO DE PELE HOSPITALAR",
+            "9. INFECÇÃO DE CORRENTE SANGUÍNEA",
+            "10. INFECÇÃO SEM FOCO DEFINIDO COMUNITÁRIA",
+            "11. INFECÇÃO SEM FOCO DEFINIDO HOSPITALAR",
+            "12. Se MRSA E ORSA",
+            "13. Se PSEUDOMONAS MR / ACINETOBACTER MR",
+            "14. Se KLEBSIELLA / CITROBACTER / ENTEROBACTER PROD. CARBAPENEMASE"
+        ];
+
+        // Cria o select
+        const select = document.createElement('select');
+        select.id = 'dropdownAntibioticos';
+        select.className = 'form-select';// Classe do Bootstrap para fundo branco
+         // Opcional: força o estilo em linha (se ainda estiver cinza)
+         select.style.backgroundColor = 'white';  // Fundo branco
+         select.style.color = 'black';             // Texto preto
+         select.style.borderColor = '#ced4da';     // Borda padrão
+         select.onchange = function () {
+            const selectedOption = this.value;
+            const textoAntibiotico = obterTextoAntibiotico(selectedOption);
+            document.getElementById('textoAntibioticos').value = textoAntibiotico.toUpperCase();
+        };
+
+        // Adiciona as opções
+        opcoes.forEach(opcao => {
+            const option = document.createElement('option');
+            option.value = opcao;
+            option.textContent = opcao;
+            select.appendChild(option);
+        });
+
+        // Adiciona o select ao container
+        container.appendChild(select);
+
+        // Cria o textarea
+        const textarea = document.createElement('textarea');
+        textarea.id = 'textoAntibioticos';
+        textarea.className = 'form-control mt-3';
+        textarea.rows = 10;
+        textarea.readOnly = true;
+        textarea.style.backgroundColor = 'white';
+        textarea.style.color = 'black';
+        container.appendChild(textarea);
+
+        // Adiciona o botão Voltar
+        const voltarButton = document.createElement('button');
+        voltarButton.className = 'btn btn-secondary mt-3';
+        voltarButton.innerText = 'Voltar';
+        voltarButton.onclick = voltarAntibioticos;
+        container.appendChild(voltarButton);
+    }
+
+		function obterTextoAntibiotico(opcao) {
+			const antibioticos = {
+		"1. INFECÇÃO PULMONAR COMUNITÁRIA": `\nCeftriaxone 2g 24/24h 7-10 dias ou 2g 1xdia 7-10 dias\nou Cefotaxima 2g 8/8h 7-10 dias + Claritromicina 500mg 12/12h 7-10 dias\n*ou Levofloxacina 750mg 1cp 1xdia 7-10 dias ou Moxifloxacina 400mg 1cp 1xdia 7-10 dias\n** Se DPOC: Cefalosporina de 4a geração: - Cefepime 2g 8/8h 7-10 dias\n* Se Pneumonia Aspirativa: Associar Clindamicina 600mg 8/8h 10 dias e suspender Claritromicina`,
+        "2. INFECÇÃO PULMONAR HOSPITALAR": `\nPiperacilina-tazobactam 4,5g 6/6h 7-10 dias\n* Se uso prévio de cefalosporinas ou quinolonas:\nTrocar por Ertapenem 1g 24/24h 7-10 dias ou Meropenem 2g 8/8h 7-10 dias`,
+        "3. INFECÇÃO URINÁRIA COMUNITÁRIA": `\nCeftriaxone 2g 24/24h 7-10 dias ou 2g 1xdia 7-10 dias ou Cefotaxima 2g 8/8h 7-10 dias\n* ou Levofloxacina 750mg 1cp 1xdia 7-10 dias ou Moxifloxacina 400mg 1cp 1xdia 7-10 dias\n`,
+        "4. INFECÇÃO URINÁRIA HOSPITALAR": `\nCefepime 2g 8/8h 7-10 dias\nou Ertapenem 1g 24/24h 7-10 dias ou Meropenem 2g 8/8h 7-10 dias\n`,
+        "5. INFECÇÃO ABDOMINAL COMUNITÁRIA": `\nCeftriaxone 1g 24/24h 7-10 dias ou 2g 1xdia 7-10 dias ou Cefotaxima 2g 8/8h 7-10 dias \n+ Metronidazol 500mg 8/8h 7-10 dias + Ampicilina 2g 6/6h 7-10 dias \n+ Gentamicina 5mg/kg/dia 1xdia ou 2,5mg/kg 12/12h ou Estreptomicina 15mg/kg 1xdia (máx 1g) 7-10 dias\n`,
+        "6. INFECÇÃO ABDOMINAL HOSPITALAR": `\nCefepime 2g 8/8h 7-10 dias\n+ Metronidazol 500mg 8/8h 7-10 dias\n+ Gentamicina 5mg/kg/dia 1xdia ou 2,5mg/kg 12/12h ou Estreptomicina 15mg/kg 1xdia (máx 1g) 7-10 dias\n* ou Meropenem 2g 8/8h 7-10 dias\nou Imipenem 500mg 6/6h 7-10 dias + Gentamicina 5mg/kg/dia 1xdia ou 2,5mg/kg 12/12h\nou Estreptomicina 15mg/kg 1xdia (máx 1g) 7-10 dias`,
+        "7. INFECÇÃO DE PELE COMUNITÁRIA": `\nCefalexina 500mg 6/6h 7-14 dias\n*ou Oxacilina 2g 4/4h 7-10 dias\n**Se sinais de necrose:\n- Associar Metronidazol 500mg 8/8h 7-10 dias\n- Se também Staphylococcia associar Clindamicina 600mg 8/8h 10 dias no lugar do Metronidazol`,
+        "8. INFECÇÃO DE PELE HOSPITALAR": `\nTeicoplanina 400mg 12/12h 3-4 dias seguido de 400mg 1xdia 6-7 dias\nou Vancomicina 20mg/kg 12/12h 7-10 dias + Cefepime 2g 8/8h 7-10 dias`,
+        "9. INFECÇÃO DE CORRENTE SANGUÍNEA": `\nMeropenem 2g 8/8h 7-10 dias ou Imipenem 500mg 6/6h 7-10 dias\n*ou Piperacilina-tazobactam 4,5g 6/6h 7-10 dias\n+ Teicoplanina 400mg 12/12h 3-4 dias com manutenção 400mg 1xdia 6-7 dias\nou Vancomicina 20mg/kg 12/12h 7-10 dias\n*Se fatores de risco para candidemia:\nAssociar Fluconazol 800mg seguido por 400mg/dia 7-21 dias\nou Caspofungina 70mg seguido por 50mg/dia 7-21 dias\nou Anidulafungina 200mg seguido por 100mg/dia 7-21 dias\nou Micafungina 100mg/dia 7-21 dias`,
+        "10. INFECÇÃO SEM FOCO DEFINIDO COMUNITÁRIA": `\nCefepime 2g 8/8h 7-10 dias + Metronidazol 500mg 8/8h 7-10 dias\n`,
+        "11. INFECÇÃO SEM FOCO DEFINIDO HOSPITALAR": `\nou Meropenem 2g 8/8h 7-10 dias ou Imipenem 500mg 6/6h 7-10 dias\n*ou Piperacilina-tazobactam 4,5g 6/6h 7-10 dias\n+ Teicoplanina 400mg 12/12h 3-4 dias seguido de 400mg 1xdia 6-7 dias\nou Vancomicina 20mg/kg 12/12h 7-10 dias\nou Linezolida 600mg 12/12h 10-14 dias`,
+        "12. Se MRSA E ORSA": `\nAssociar Teicoplanina 400mg 12/12h 3-4 dias\nou Vancomicina 20mg/kg 12/12h 7-10 dias\nou Linezolida 600mg 12/12h 10-14 dias`,
+        "13. Se PSEUDOMONAS MR / ACINETOBACTER MR": `\nAssociar Poli B 20.000-25.000 UI/Kg 2 doses seguido de 12.500-15.000UI/kg 12/12h 6-9 dias\n`,
+        "14. Se KLEBSIELLA / CITROBACTER / ENTEROBACTER PROD. CARBAPENEMASE": `\nAssociar Poli B 20.000-25.000 UI/Kg 2 doses seguido de 12.500-15.000UI/kg 12/12h 6-9 dias + Aztreonam 2g 8/8h 7-10 dias\n`,
+	
+				// Adicione os textos das outras opções aqui...
+			};
+
+			return antibioticos[opcao] || "Texto não disponível.";
+		}
+
+				function voltarAntibioticos() {
+                    const container = document.getElementById('antibioticosContainer');
+                    container.classList.add('d-none');
+                    container.innerHTML = '';
+                    document.getElementById('userPanel').classList.remove('d-none');
+                }
+
+        // Funções para Sugestões de Drippings
+		function sugerirDrippings() {
+            // Referências
+            const container = document.getElementById('drippingsContainer');
+            const userPanel = document.getElementById('userPanel');
+
+            // ✅ Primeiro: limpa o container
+            container.innerHTML = '';
+
+            // ✅ Depois: mostra o container
+            container.classList.remove('d-none');
+            userPanel.classList.add('d-none');
+
+            const opcoes = [
+                "0. CLIQUE AQUI PARA ABRIR  ",
+                "1. AMINAS",
+                "2. SEDATIVOS",
+                "3. ANALGÉSICOS",
+                "4. VASODILATADORES",
+                "5. ANTIARRÍTIMICO",
+                "6. BLOQUEADORES NEUROMUSCULARES",
+                "7. OUTROS"
+            ];
+
+            // Cria o select
+            const select = document.createElement('select');
+            select.id = 'dropdownDrippings';
+            select.className = 'form-select'; // classe do Bootstrap
+            select.onchange = function () {
+                const selectedOption = this.value;
+                // ✅ Corrigido: nome da função
+                const textoDrippings = obterTextoDrippings(selectedOption);
+                document.getElementById('textoDrippings').value = textoDrippings.toUpperCase();
+            };
+
+            // Adiciona as opções
+            opcoes.forEach(opcao => {
+                const option = document.createElement('option');
+                option.value = opcao;
+                option.textContent = opcao;
+                select.appendChild(option);
+            });
+
+            // ✅ Adiciona o select ao container
+            container.appendChild(select);
+
+            // Cria textarea
+            const textarea = document.createElement('textarea');
+            textarea.id = 'textoDrippings';
+            textarea.className = 'form-control mt-3';
+            textarea.rows = 10;
+            textarea.readOnly = true;
+            textarea.style.backgroundColor = 'white';
+            textarea.style.color = 'black';
+            container.appendChild(textarea);
+
+            // Botão Voltar
+            const voltarButton = document.createElement('button');
+            voltarButton.className = 'btn btn-secondary mt-3';
+            voltarButton.innerText = 'Voltar';
+            voltarButton.onclick = voltarDrippings;
+            container.appendChild(voltarButton);
+        }
+
+        // ✅ Função com nome correto
+        function obterTextoDrippings(opcao) {
+            const drippings = {
+                "1. AMINAS": `ADRENALINA PADRÃO I: Adrenalina 1mg/ml (10 ampolas de 1ml) + 90ml de SG5% IV BI \nACM DOBUTAMINA PADRÃO I (PURO): Dobutamina pura 60ml (3 ampolas de 20ml) \nDOBUTAMINA PADRÃO II: Dobutamina pura 60ml (3 ampolas de 20ml) + 190ml de SF0,9% \nDOPAMINA PADRÃO I (PURO): Dopamina pura 60ml (6 ampolas de 10ml) \nNORA PADRÃO I: Norepinefrina 20ml (5 ampolas de 4ml) + 80ml de SG5% IV BI ACM \nNORA PADRÃO II (LIGHT): Norepinefrina 8ml (2 ampola de 4ml) + 72ml de SG5% IV BI ACM \nNORA PADRÃO III (SUPER LIGHT): Norepinefrina 4ml (1 ampola de 4ml) + 96ml de SG5% IV BI ACM \nVASOPRESSINA PADRÃO I: Vasopressina 1ml (20UI) (1 ampola de 1ml) + 99ml de SF0,9% IV BI ACM \nVASOPRESSINA PADRÃO II: Vasopressina 1ml (20UI) (2 ampola de 1ml) + 98 ml de SF0,9% IV BI ACM`,
+                "2. SEDATIVOS": `DEXMEDETOMIDINA PADRÃO I: Dexmedetomidina 2ml + 48ml de SF0,9% IV BI ACM\nMIDAZOLAM PADRÃO I (PURO): Midazolam 60ml (6 ampolas de 10ml) sem diluição IV BI ACM\nMIDAZOLAM PADRÃO II (DILUÍDO): Midazolam 30ml (3 ampolas de 10ml) + 120ml de SF0,9% IV BI ACM\nPROPOFOL PADRÃO I: Propofol 1% 60ml (3 ampolas de 20ml) sem diluição IV BI ACM\nESCETAMINA 20ml (2 ampolas de 10ml) + 80ml de SF 0,9% IV BI ACM\nDEXTROCETAMINA PADRÃO I: Dextrocetamina 10ml (1 ampola de 10ml) + 90ml de SF0,9% IV BI ACM`,
+                "3. ANALGÉSICOS": `FENTANIL PADRÃO I (PURO): Fentanil 60ml (6 ampolas de 10ml) IV BI ACM\nFENTANIL PADRÃO II: Fentanil 20ml (2 ampolas de 10ml) + 80ml de SF0,9% IV BI ACM\nFENTANIL PADRÃO III: Fentanil 10ml (1 ampola de 10ml) + 90ml de SF0,9% IV BI ACM\nMORFINA PADRÃO I: Morfina 10ml (10 ampolas de 1ml)+ 90ml de SF0,9% IV BI ACM (Ataque: 0,03-0,2mg/kg)(Manutenção: 0,05-0,3mg/kg/h)`,
+                "4. VASODILATADORES": `NITROPRUSSIATO DE SÓDIO PADRÃO I: Nitroprussiato de sódio 2ml (1 ampola de 2ml) + 248ml de SF0,9% IV BI ACM\nNITROGLICERINA PADRÃO I: Nitroglicerina 5ml (1 ampola de 2ml) + 245ml de SF0,9% IV BI ACM`,
+                "5. ANTIARRÍTIMICO": `AMIODARONA: Amiodarona:(Ataque: 6ml (2 ampolas de 3ml) + 100ml de SG 5% IV BI ACM à 10-30ml/h)\n(Manutenção: 18ml (6 ampolas de 3ml) + 232ml de SG5% IV BI ACM à 32ml/h 6h e 16ml/h 18h)\n(Manutenção Periférica: 18ml (6 ampolas de 3ml) + 428ml de SG5% IV BI ACM à 32ml/h 6h e 16ml/h 18h)`,
+                "6. BLOQUEADORES NEUROMUSCULARES": `ATRACÚRIO PADRÃO I (PURO): Atracúrio 50ml (10 ampolas de 5ml) IV BI ACM (Ataque: 04-0,5mg/kg) (Manutenção: 3-5ml/h)\nATRACÚRIO PADRÃO II (DILUÍDO): Atracúrio 30ml (6 ampolas de 5ml) + 30ml de SF0,9% IV BI ACM\n(Ataque: 3-5ml) (Manutenção: tentar manter entre 3-5ml/h (até 80Kg) / 5-8ml/h (80-100kg) / 10ml/h (>100kg))\nCISATRACÚRIO PADRÃO I (PURO): Cisatracúrio 60ml (12 ampolas de 5ml) IV BI ACM (Ataque: 0,1-0,5mcg/kg) (Manutenção: 1-5 mcg/kg/min)\nCISATRACÚRIO PADRÃO II (DILUÍDO): Cisatracúrio 30ml (6 ampolas de 5ml) + 30ml de SF0,9% IV BI ACM\n(Ataque: 0,1-0,5mcg/kg) (Manutenção: 1-5 mcg/kg/min)\nROCURÔNIO PADRÃO I: Rocurônio 30ml (6 ampolas de 5ml) + 30ml de SF0,9% IV BI ACM`,
+                "7. OUTROS": `HEPARINA PADRÃO I: Heparina 25.000UI (5ml) + 245ml de SG5% IV BI ACM\nINSULINA PADRÃO I: Insulina 100Ul (1ml) + 99ml de SF0,9% IV BI ACM`
+            };
+
+            return drippings[opcao] || "Texto não disponível.";
+        }
+
+        function voltarDrippings() {
+            const container = document.getElementById('drippingsContainer');
+            container.classList.add('d-none');
+            container.innerHTML = ''; // ✅ Limpa ao voltar
+            document.getElementById('userPanel').classList.remove('d-none');
+        }
+
+        // Funções para Sugestões de Preparos
+                function sugerirPreparos() {
+                    window.open('https://prcp73net.github.io/ferramenta/pdf/Preparos.html', '_blank'); // Altere o caminho para o seu arquivo PDF
+                }
+
+                function voltarPreparos() {
+                    const container = document.getElementById('preparosContainer');
+                    container.classList.add('d-none');
+                    container.innerHTML = '';
+                    document.getElementById('userPanel').classList.remove('d-none');
+                }
+
+        // Funções para Sugestões de Antibióticos Corrigidos
+        function sugerirAntibioticosc() {
+            window.open('https://prcp73net.github.io/ferramenta/pdf/Antibioticosc.html', '_blank'); // Altere o caminho para o seu arquivo PDF
+        }
+
+        function voltarAntibioticosc() {
+            const container = document.getElementById('antibioticoscContainer');
+            container.classList.add('d-none');
+            container.innerHTML = '';
+            document.getElementById('userPanel').classList.remove('d-none');
+        }
+
+        // Funções para Doses Pediátricas
+        function sugerirDosePedi() {
+            window.open('https://prcp73net.github.io/ferramenta/pdf/DosePedi.html', '_blank'); // Altere o caminho para o seu arquivo PDF
+        }
+
+        function voltarDosePedi() {
+            const container = document.getElementById('dosepediContainer');
+            container.classList.add('d-none');
+            container.innerHTML = '';
+            document.getElementById('userPanel').classList.remove('d-none');
+            }
+
+    </script>
+    <script src="./PRCP 7.3 .net_files/popper.min.js.baixados"></script>
+    <script src="./PRCP 7.3 .net_files/bootstrap.min.js.baixados"></script>
+
+</body></html>
